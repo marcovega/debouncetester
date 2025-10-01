@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mouse Double-Click Debounce Tester | Fix Logitech Double-Click Issues</title>
+    <meta name="description" content="Free tool to test and measure mouse double-click timing. Find the optimal debounce delay to fix Logitech mouse double-clicking problems on Windows 11.">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            color: #1a1a1a;
+        }
+
+        h2 {
+            font-size: 20px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            color: #1a1a1a;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 8px;
+        }
+
+        .intro {
+            background: #f8f9fa;
+            padding: 20px;
+            border-left: 4px solid #0066cc;
+            margin-bottom: 30px;
+        }
+
+        .intro p {
+            margin-bottom: 10px;
+        }
+
+        .intro p:last-child {
+            margin-bottom: 0;
+        }
+
+        .two-column-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-top: 30px;
+        }
+
+        .left-column h2 {
+            margin-top: 0;
+        }
+
+        .right-column h2 {
+            margin-top: 0;
+        }
+
+        .instructions {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        .instructions h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 16px;
+            color: #856404;
+        }
+
+        .instructions ol {
+            margin-left: 20px;
+            margin-bottom: 0;
+        }
+
+        .instructions li {
+            margin-bottom: 5px;
+            color: #856404;
+        }
+
+        .instructions p {
+            color: #856404;
+            margin: 0;
+        }
+
+        .click-area {
+            background: #0066cc;
+            color: white;
+            padding: 80px 40px;
+            text-align: center;
+            cursor: pointer;
+            margin-bottom: 20px;
+            border: 2px solid #0052a3;
+            transition: background 0.2s;
+            user-select: none;
+        }
+
+        .click-area:hover {
+            background: #0052a3;
+        }
+
+        .click-area:active {
+            background: #003d7a;
+        }
+
+        .click-text {
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-box {
+            border: 1px solid #e0e0e0;
+            padding: 15px;
+            background: #fafafa;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .stat-unit {
+            font-size: 16px;
+            font-weight: 400;
+            color: #666;
+        }
+
+        .history {
+            border: 1px solid #e0e0e0;
+            padding: 15px;
+            margin-bottom: 20px;
+            background: #fafafa;
+        }
+
+        .history h3 {
+            font-size: 14px;
+            margin-bottom: 10px;
+            color: #1a1a1a;
+        }
+
+        .history-item {
+            padding: 6px 0;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 13px;
+            color: #333;
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+        }
+
+        .history-empty {
+            color: #999;
+            font-style: italic;
+            font-size: 13px;
+        }
+
+        .recommendation {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .recommendation h3 {
+            color: #155724;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .recommendation p {
+            color: #155724;
+            margin-bottom: 0;
+            font-size: 14px;
+        }
+
+        .recommendation strong {
+            font-size: 18px;
+        }
+
+        #problemAlert {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+            padding: 15px;
+            margin-bottom: 20px;
+            animation: pulse 0.5s;
+            display: none;
+        }
+
+        #problemAlert h3 {
+            color: #721c24;
+            margin-top: 0;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        #problemAlert p {
+            color: #721c24;
+            margin: 0;
+            font-size: 14px;
+        }
+
+        #problemAlert {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+            padding: 15px;
+            margin-bottom: 20px;
+            animation: pulse 0.5s;
+            display: none;
+        }
+
+        #problemAlert h3 {
+            color: #721c24;
+            margin-top: 0;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        #problemAlert p {
+            color: #721c24;
+            margin: 0;
+            font-size: 14px;
+        }
+
+        #problemCount {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 12px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        #problemCount p {
+            margin: 0;
+            color: #856404;
+            font-size: 14px;
+        }
+
+        #problemCounter {
+            font-size: 20px;
+            color: #dc3545;
+        }
+
+        .solutions {
+            background: #f8f9fa;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .solutions h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .solution-item {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .solution-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .solution-item strong {
+            display: block;
+            margin-bottom: 5px;
+            color: #0066cc;
+        }
+
+        .button {
+            background: #0066cc;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-weight: 600;
+            transition: background 0.2s;
+            width: 100%;
+        }
+
+        .button:hover {
+            background: #0052a3;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        @media (max-width: 1024px) {
+            .two-column-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Mouse Double-Click Debounce Tester</h1>
+        
+        <div class="intro">
+            <p><strong>Fix Logitech mouse double-clicking problems</strong> by measuring your click timing and finding the optimal debounce delay.</p>
+            <p>This free tool helps diagnose mouse double-click issues common in Logitech mice (G502, G Pro, MX Master, etc.) and determine the correct software debounce setting for Windows 11, macOS, and Linux.</p>
+        </div>
+
+        <div class="two-column-layout">
+            <div class="left-column">
+                <h2>How to Use This Tool</h2>
+                <div class="instructions">
+                    <ol>
+                        <li>Click rapidly in the blue test area (10-20 times)</li>
+                        <li>Watch for red alerts when clicks occur under 60ms</li>
+                        <li>Review your statistics and recommended debounce delay</li>
+                        <li>Apply the setting using one of the solutions below</li>
+                    </ol>
+                </div>
+
+                <h2>How to Fix Mouse Double-Clicking</h2>
+                <div class="solutions">
+                    <h3>Windows 11 Solutions</h3>
+                    
+                    <div class="solution-item">
+                        <strong>X-Mouse Button Control (Recommended)</strong>
+                        Free software with built-in debounce. Download from highrez.co.uk/downloads/XMouseButtonControl.htm - Click the "Settings" button (bottom left of window) → Go to "Advanced" tab → Check "De-bounce (ignore) rapid mouse button clicks" → Enter your recommended delay in milliseconds → Click OK → Click Apply.
+                    </div>
+
+                    <div class="solution-item">
+                        <strong>AutoHotkey Script</strong>
+                        Free scripting solution. Download AutoHotkey from autohotkey.com - Create script with debounce timer using your recommended delay value.
+                    </div>
+
+                    <h3>macOS Solutions</h3>
+                    
+                    <div class="solution-item">
+                        <strong>BetterMouse (Free/Paid)</strong>
+                        Available on GitHub or Mac App Store. Includes debounce settings under "Click" preferences. Set your recommended delay in milliseconds.
+                    </div>
+
+                    <div class="solution-item">
+                        <strong>Karabiner-Elements (Free)</strong>
+                        Advanced keyboard/mouse customization. Download from karabiner-elements.pqrs.org - Create complex modifications to add click debouncing with JSON configuration.
+                    </div>
+
+                    <h3>Linux Solutions</h3>
+                    
+                    <div class="solution-item">
+                        <strong>xinput + xdotool Script</strong>
+                        Use xinput to capture events and xdotool to filter clicks. Create bash script with sleep delay matching your recommended debounce value. Best for X11 environments.
+                    </div>
+
+                    <div class="solution-item">
+                        <strong>libinput Debouncing (Newer Systems)</strong>
+                        Some newer libinput versions support debouncing. Check with: libinput list-devices. Configure via /etc/libinput/local-overrides.quirks if supported.
+                    </div>
+
+                    <div class="solution-item">
+                        <strong>evdev + Python Script</strong>
+                        Use python-evdev library to intercept mouse events and filter rapid clicks. Works on both X11 and Wayland. Requires root/sudo access.
+                    </div>
+
+                    <h3>Cross-Platform Solutions</h3>
+
+                    <div class="solution-item">
+                        <strong>Logitech G HUB or Logitech Options+</strong>
+                        Check if your Logitech mouse model supports debounce settings in official software. Available for Windows, macOS, and some Linux distros. Look in button configuration settings.
+                    </div>
+
+                    <div class="solution-item">
+                        <strong>Hardware Fix: Replace Mouse Switches</strong>
+                        Permanent solution for worn-out switches. Requires soldering skills. Common fix for G502, MX Master, and other Logitech mice with Omron switch failures. Works on any OS.
+                    </div>
+                </div>
+            </div>
+
+            <div class="right-column">
+                <h2>Click Tester</h2>
+
+                <div id="problemCount">
+                    <p><strong>Total problems detected: <span id="problemCounter">0</span></strong> (clicks under 60ms)</p>
+                </div>
+
+                <div class="click-area" id="clickArea">
+                    <div class="click-text">Click Here to Test</div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-label">Average Click Interval</div>
+                        <div class="stat-value" id="avgInterval">--<span class="stat-unit">ms</span></div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Shortest Click Interval</div>
+                        <div class="stat-value" id="minInterval">--<span class="stat-unit">ms</span></div>
+                    </div>
+                </div>
+
+                <div class="history">
+                    <h3>Last 5 Click Intervals</h3>
+                    <div id="historyList">
+                        <div class="history-empty">No clicks recorded yet. Start clicking above.</div>
+                    </div>
+                </div>
+
+                <div class="recommendation" id="recommendation" style="display: none;">
+                    <h3>Recommended Debounce Setting</h3>
+                    <p id="recommendationText"></p>
+                </div>
+
+                <button class="button" onclick="resetStats()">Reset Test</button>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>Common Logitech mice with double-click issues:</strong> G502, G Pro, G203, G305, G703, MX Master, MX Master 2S, MX Master 3, MX Anywhere, M720 Triathlon</p>
+            <p><strong>Keywords:</strong> mouse double click fix, Logitech double click, debounce delay, Windows 11 mouse fix, macOS mouse fix, Linux mouse fix, mouse clicking twice</p>
+            <hr style="margin: 20px 0; border: none; border-top: 1px solid #e0e0e0;">
+            <p style="font-size: 13px; color: #666;">Created by <a href="https://marcovega.co" target="_blank" rel="noopener" style="color: #0066cc; text-decoration: none;">Marco Vega</a> | <a href="https://github.com/marcovega/deboucetester" target="_blank" rel="noopener" style="color: #0066cc; text-decoration: none;">View on GitHub</a></p>
+        </div>
+    </div>
+
+    <script>
+        let lastClickTime = null;
+        let intervals = [];
+        let problemCount = 0;
+        const maxHistory = 5;
+        const PROBLEM_THRESHOLD = 60;
+
+        const clickArea = document.getElementById('clickArea');
+        const avgIntervalEl = document.getElementById('avgInterval');
+        const minIntervalEl = document.getElementById('minInterval');
+        const historyListEl = document.getElementById('historyList');
+        const recommendationEl = document.getElementById('recommendation');
+        const recommendationTextEl = document.getElementById('recommendationText');
+        const problemCountEl = document.getElementById('problemCount');
+        const problemCounterEl = document.getElementById('problemCounter');
+
+        clickArea.addEventListener('click', function(e) {
+            const currentTime = Date.now();
+            
+            if (lastClickTime !== null) {
+                const interval = currentTime - lastClickTime;
+                intervals.push(interval);
+                
+                if (interval < PROBLEM_THRESHOLD) {
+                    problemCount++;
+                    showProblemAlert(interval);
+                }
+                
+                updateStats();
+                updateHistory(interval);
+                updateRecommendation();
+            }
+            
+            lastClickTime = currentTime;
+        });
+
+        function showProblemAlert(interval) {
+            problemCountEl.style.display = 'block';
+            problemCounterEl.textContent = problemCount;
+        }
+
+        function updateStats() {
+            if (intervals.length === 0) return;
+
+            const avg = intervals.reduce((a, b) => a + b, 0) / intervals.length;
+            const min = Math.min(...intervals);
+
+            avgIntervalEl.innerHTML = Math.round(avg) + '<span class="stat-unit">ms</span>';
+            minIntervalEl.innerHTML = min + '<span class="stat-unit">ms</span>';
+        }
+
+        function updateHistory(interval) {
+            if (intervals.length === 1) {
+                historyListEl.innerHTML = '';
+            }
+
+            const historyItem = document.createElement('div');
+            historyItem.className = 'history-item';
+            
+            if (interval < PROBLEM_THRESHOLD) {
+                historyItem.style.color = '#dc3545';
+                historyItem.style.fontWeight = 'bold';
+                historyItem.textContent = `Click #${intervals.length}: ${interval}ms ⚠️`;
+            } else {
+                historyItem.textContent = `Click #${intervals.length}: ${interval}ms`;
+            }
+            
+            historyListEl.insertBefore(historyItem, historyListEl.firstChild);
+
+            while (historyListEl.children.length > maxHistory) {
+                historyListEl.removeChild(historyListEl.lastChild);
+            }
+        }
+
+        function updateRecommendation() {
+            if (intervals.length < 5) return;
+
+            const min = Math.min(...intervals);
+            
+            recommendationEl.style.display = 'block';
+            
+            let recommendationText = `Based on ${intervals.length} clicks, your fastest interval is <strong>${min}ms</strong>. For fixing double-click issues, most people start with <strong>50ms debounce</strong> and increase to 75-100ms if needed. Test different values to find what works for your mouse.`;
+            
+            if (problemCount > 0) {
+                recommendationText += ` <strong style="color: #dc3545;">You've experienced ${problemCount} problematic double-click(s) under 60ms - debouncing is strongly recommended.</strong>`;
+            }
+            
+            recommendationTextEl.innerHTML = recommendationText;
+        }
+
+        function resetStats() {
+            intervals = [];
+            lastClickTime = null;
+            problemCount = 0;
+            avgIntervalEl.innerHTML = '--<span class="stat-unit">ms</span>';
+            minIntervalEl.innerHTML = '--<span class="stat-unit">ms[I</span>';
+            historyListEl.innerHTML = '<div class="history-empty">No clicks recorded yet. Start clicking above.</div>';
+            recommendationEl.style.display = 'none';
+            problemCountEl.style.display = 'none';
+            problemCounterEl.textContent = '0';
+        }
+    </script>
+</body>
+</html>
+
